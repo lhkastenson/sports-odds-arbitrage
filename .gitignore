@@ -51,3 +51,6 @@ nunit-*.xml
 *.db
 *.db-shm
 *.db-wal
+
+# my test data raw pulls
+.test-data
