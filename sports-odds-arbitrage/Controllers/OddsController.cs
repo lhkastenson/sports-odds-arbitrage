@@ -10,7 +10,7 @@ public class OddsController(IOddsAggregatorService oddsAggregatorService) : Cont
   [HttpGet]
   public async Task<ActionResult<IReadOnlyCollection<SportEvent>>> GetAggregatedOddsForSports(string sportKey, CancellationToken ct)
   {
-    var se = await oddsAggregatorService.GetAggregatedOddsAsync(sportKey, ct);
-    return Ok(se);
+    var sportEvents = await oddsAggregatorService.GetAggregatedOddsAsync(sportKey, ct);
+    return Ok(sportEvents);
   }
 }
