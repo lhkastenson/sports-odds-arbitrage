@@ -2,6 +2,9 @@ using Serilog;
 using Microsoft.EntityFrameworkCore;
 using sports_odds_arbitrage.Data;
 using sports_odds_arbitrage.Configuration;
+using sports_odds_arbitrage.Services.Interfaces;
+using sports_odds_arbitrage.Services.Providers;
+using sports_odds_arbitrage.Services;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -28,6 +31,10 @@ try {
     builder.Services.AddSwaggerGen();
 
     // TODO: Service Registration here
+    builder.Services.AddSingleton<IOddsCacheService, OddsCacheService>();
+    builder.Services.AddSingleton<IOddsProvider, MockOddsProvider>();
+    builder.Services.AddScoped<IOddsAggregatorService, OddsAggregatorService>();
+    builder.Services.AddTransient<IArbitrageDetectionService, ArbitrageDetectionService>();
 
     var app = builder.Build();
 
