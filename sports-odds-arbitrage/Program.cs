@@ -5,6 +5,7 @@ using sports_odds_arbitrage.Configuration;
 using sports_odds_arbitrage.Services.Interfaces;
 using sports_odds_arbitrage.Services.Providers;
 using sports_odds_arbitrage.Services;
+using sports_odds_arbitrage.Middleware;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -30,7 +31,6 @@ try {
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
-    // TODO: Service Registration here
     builder.Services.AddSingleton<IOddsCacheService, OddsCacheService>();
     builder.Services.AddSingleton<IOddsProvider, MockOddsProvider>();
     builder.Services.AddScoped<IOddsAggregatorService, OddsAggregatorService>();
@@ -50,6 +50,7 @@ try {
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
 
     app.UseHttpsRedirection();
     app.UseAuthorization();
