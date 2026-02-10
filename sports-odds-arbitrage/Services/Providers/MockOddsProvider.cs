@@ -6,29 +6,13 @@ public class MockOddsProvider : IOddsProvider
 {
   public string ProviderName { get; } = "MockOddsProvider";
 
-  private Outcome testOutcomeDKMilwaukeeAdmirals = new Outcome
-  {
-    Name = "Milwaukee Admirals",
-    Price = -175
-  };
+  private Outcome testOutcomeDKMilwaukeeAdmirals = new Outcome { Name = "Milwaukee Admirals", Price = -175 };
 
-  private Outcome testOutcomeDKRockfordIceHogs = new Outcome
-  {
-    Name = "Rockford IceHogs",
-    Price = 135
-  };
+  private Outcome testOutcomeDKRockfordIceHogs = new Outcome { Name = "Rockford IceHogs", Price = 135 };
 
-  private Outcome testOutcomeFDMilwaukeeAdmirals = new Outcome
-  {
-    Name = "Milwaukee Admirals",
-    Price = -195
-  };
+  private Outcome testOutcomeFDMilwaukeeAdmirals = new Outcome { Name = "Milwaukee Admirals", Price = -195 };
 
-  private Outcome testOutcomeFDRockfordIceHogs = new Outcome
-  {
-    Name = "Rockford IceHogs",
-    Price = 130
-  };
+  private Outcome testOutcomeFDRockfordIceHogs = new Outcome { Name = "Rockford IceHogs", Price = 130 };
 
   private Market testMarketDKAHL()
   {
@@ -89,29 +73,13 @@ public class MockOddsProvider : IOddsProvider
     };
   }
 
-  private Outcome testOutcomeDKAuburnTigers = new Outcome
-  {
-    Name = "Auburn Tigers",
-    Price = -155
-  };
+  private Outcome testOutcomeDKAuburnTigers = new Outcome { Name = "Auburn Tigers", Price = -155 };
 
-  private Outcome testOutcomeDKAlabama = new Outcome
-  {
-    Name = "Alabama Crimson Tide",
-    Price = 130
-  };
+  private Outcome testOutcomeDKAlabama = new Outcome { Name = "Alabama Crimson Tide", Price = 130 };
 
-  private Outcome testOutcomeFDAuburnTigers = new Outcome
-  {
-    Name = "Auburn Tigers",
-    Price = -164
-  };
+  private Outcome testOutcomeFDAuburnTigers = new Outcome { Name = "Auburn Tigers", Price = -164 };
 
-  private Outcome testOutcomeFDAlabama = new Outcome
-  {
-    Name = "Alabama Crimson Tide",
-    Price = 136
-  };
+  private Outcome testOutcomeFDAlabama = new Outcome { Name = "Alabama Crimson Tide", Price = 136 };
 
   private Market testMarketNCAABDK()
   {
@@ -171,27 +139,11 @@ public class MockOddsProvider : IOddsProvider
     };
   }
 
-  private Outcome testOutcomeDKNewEngland = new Outcome
-  {
-    Name = "New England Patriots",
-    Price = 190
-  };
-  private Outcome testOutcomeDKSeattle = new Outcome
-  {
-    Name = "Seattle Seahawks",
-    Price = -230
-  };
+  private Outcome testOutcomeDKNewEngland = new Outcome { Name = "New England Patriots", Price = 190 };
+  private Outcome testOutcomeDKSeattle = new Outcome { Name = "Seattle Seahawks", Price = -230 };
 
-    private Outcome testOutcomeFDNewEngland = new Outcome
-  {
-    Name = "New England Patriots",
-    Price = 188
-  };
-  private Outcome testOutcomeFDSeattle = new Outcome
-  {
-    Name = "Seattle Seahawks",
-    Price = -255
-  };
+    private Outcome testOutcomeFDNewEngland = new Outcome { Name = "New England Patriots", Price = 188 };
+  private Outcome testOutcomeFDSeattle = new Outcome { Name = "Seattle Seahawks", Price = -255 };
 
   private Market testMarketFootballDK()
   {
@@ -203,7 +155,6 @@ public class MockOddsProvider : IOddsProvider
     };
   }
 
-  
   private Market testMarketFootballFD()
   {
     List<Outcome> outcomes = new List<Outcome>() {testOutcomeFDNewEngland, testOutcomeFDSeattle};
@@ -226,7 +177,6 @@ public class MockOddsProvider : IOddsProvider
     };
   }
 
-  
   private Bookmaker testBookmakerFootballFanDuel()
   {
     List<Market> markets = new List<Market>() {testMarketFootballFD()};
@@ -256,6 +206,69 @@ public class MockOddsProvider : IOddsProvider
     };
   }
 
+  // NHL mock data — odds are intentionally set to produce an arbitrage opportunity.
+  // DraftKings thinks Minnesota is the underdog (+115), FanDuel thinks Colorado is even (+100).
+  // Best prices: Colorado +100 (FD), Minnesota +115 (DK)
+  // Implied probabilities: 100/200 + 100/215 = 0.5000 + 0.4651 = 0.9651 → ~3.5% arb
+  private Outcome testOutcomeDKColorado = new Outcome { Name = "Colorado Avalanche", Price = -120 };
+  private Outcome testOutcomeDKMinnesota = new Outcome { Name = "Minnesota Wild", Price = 115 };
+  private Outcome testOutcomeFDColorado = new Outcome { Name = "Colorado Avalanche", Price = 100 };
+  private Outcome testOutcomeFDMinnesota = new Outcome { Name = "Minnesota Wild", Price = -110 };
+
+  private Market testMarketNHLDK()
+  {
+    return new Market
+    {
+      Key = "h2h",
+      Outcomes = new List<Outcome>() { testOutcomeDKColorado, testOutcomeDKMinnesota }
+    };
+  }
+
+  private Market testMarketNHLFD()
+  {
+    return new Market
+    {
+      Key = "h2h",
+      Outcomes = new List<Outcome>() { testOutcomeFDColorado, testOutcomeFDMinnesota }
+    };
+  }
+
+  private Bookmaker testBookmakerNHLDK()
+  {
+    return new Bookmaker
+    {
+      Key = "draftkings",
+      Title = "DraftKings",
+      LastUpdate = DateTimeOffset.Now,
+      Markets = new List<Market>() { testMarketNHLDK() }
+    };
+  }
+
+  private Bookmaker testBookmakerNHLFD()
+  {
+    return new Bookmaker
+    {
+      Key = "fanduel",
+      Title = "FanDuel",
+      LastUpdate = DateTimeOffset.Now,
+      Markets = new List<Market>() { testMarketNHLFD() }
+    };
+  }
+
+  private SportEvent testSportEventNHL()
+  {
+    return new SportEvent
+    {
+      Id = "mock-nhl-001",
+      SportKey = "icehockey_nhl",
+      SportTitle = "NHL",
+      HomeTeam = "Colorado Avalanche",
+      AwayTeam = "Minnesota Wild",
+      CommenceTime = DateTimeOffset.Now.AddHours(2),
+      Bookmakers = new List<Bookmaker>() { testBookmakerNHLDK(), testBookmakerNHLFD() }
+    };
+  }
+
   public async Task<IReadOnlyList<SportEvent>> GetOddsAsync(string sportKey, CancellationToken ct = default)
   {
     Console.WriteLine($"Fetching results from mock service for key: {sportKey}...");
@@ -271,6 +284,9 @@ public class MockOddsProvider : IOddsProvider
         break;
       case "icehockey_ahl":
         mockData = new List<SportEvent>() { testSportEventAHL() };
+        break;
+      case "icehockey_nhl":
+        mockData = new List<SportEvent>() { testSportEventNHL() };
         break;
       default:
         Console.WriteLine($"No results for {sportKey} from mock service");
