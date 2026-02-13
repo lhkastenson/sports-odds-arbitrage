@@ -5,9 +5,9 @@ namespace sports_odds_arbitrage.Services;
 
 public sealed class OddsCacheService : IOddsCacheService, IDisposable
 {
-  private ConcurrentDictionary<string, CacheEntry> _cache = new ConcurrentDictionary<string, CacheEntry>();
+  private readonly ConcurrentDictionary<string, CacheEntry> _cache = new ConcurrentDictionary<string, CacheEntry>();
   private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new ConcurrentDictionary<string, SemaphoreSlim>();
-
+  private const int EXPIRATION_MINUTES = 10;
   private sealed record CacheEntry(object Data, DateTimeOffset ExpiresAt)
   {
     public bool IsExpired => DateTimeOffset.UtcNow >= ExpiresAt;
@@ -34,7 +34,7 @@ public sealed class OddsCacheService : IOddsCacheService, IDisposable
           if (result == null)
             throw new InvalidOperationException($"Cache factory for {cacheKey} returned null");
 
-          cacheEntry = new CacheEntry(result, DateTimeOffset.UtcNow.Add(expiration.GetValueOrDefault(new TimeSpan(0, 10, 0))));
+          cacheEntry = new CacheEntry(result, DateTimeOffset.UtcNow.Add(expiration.GetValueOrDefault(TimeSpan.FromMinutes(EXPIRATION_MINUTES))));
           _cache.AddOrUpdate(cacheKey, cacheEntry, (key, old) => cacheEntry);
         }
       }
