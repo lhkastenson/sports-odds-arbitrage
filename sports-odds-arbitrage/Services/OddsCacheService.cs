@@ -35,7 +35,7 @@ public sealed class OddsCacheService : IOddsCacheService, IDisposable
             throw new InvalidOperationException($"Cache factory for {cacheKey} returned null");
 
           cacheEntry = new CacheEntry(result, DateTimeOffset.UtcNow.Add(expiration.GetValueOrDefault(new TimeSpan(0, 10, 0))));
-          _cache.TryAdd(cacheKey, cacheEntry);
+          _cache.AddOrUpdate(cacheKey, cacheEntry, (key, old) => cacheEntry);
         }
       }
       finally
