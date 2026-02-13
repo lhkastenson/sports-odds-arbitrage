@@ -5,8 +5,8 @@ namespace sports_odds_arbitrage.Services;
 
 public sealed class OddsCacheService : IOddsCacheService, IDisposable
 {
-  private readonly ConcurrentDictionary<string, CacheEntry> _cache = new ConcurrentDictionary<string, CacheEntry>();
-  private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new ConcurrentDictionary<string, SemaphoreSlim>();
+  private readonly ConcurrentDictionary<string, CacheEntry> _cache = new();
+  private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new();
   private const int EXPIRATION_MINUTES = 10;
   private sealed record CacheEntry(object Data, DateTimeOffset ExpiresAt)
   {
